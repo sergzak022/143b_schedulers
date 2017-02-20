@@ -1,0 +1,36 @@
+{
+  "name": "node_proj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "dependencies": {
+    "ramda": "^0.23.0",
+    "rxjs": "^5.1.0",
+    "typescript": "^2.1.5"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.39",
+    "@types/node": "^7.0.5",
+    "@types/ramda": "0.0.3",
+    "@types/rx": "^4.1.1",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "node-inspector": "^0.12.8",
+    "nodemon": "^1.11.0",
+    "sinon": "^1.17.7",
+    "ts-node": "^2.0.0",
+    "typedoc": "^0.5.6"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha --compilers ts:ts-node/register,tsx:ts-node/register src/**/*.test.ts",
+    "start": "npm run build:live",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts",
+    "prepublish": "tsc",
+    "prepublish:live": "tsc --watch",
+    "docs": "cd src; ../node_modules/typedoc/bin/typedoc --module commonjs --target ES6 --out ../doc/ ./; cd ..",
+    "debug": "node --debug-brk dist/index.js | node-inspector"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

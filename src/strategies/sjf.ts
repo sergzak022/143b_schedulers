@@ -1,31 +1,28 @@
 import { ProcessInfo } from '../util/parse-input';
+import { Fifo } from './fifo';
 import * as R from 'ramda';
-
-export namespace Fifo {
+/**
+ * Shortest job first strategy
+ */
+export namespace Sjf {
   /**
    * simulate execution of the process
    * @param processInfo process before being executed
    * @returns process info after it's been executed
    */
   export function run( processInfo: ProcessInfo ) : ProcessInfo {
-    return [
-      R.head(processInfo),
-      0 // fifo run funcion executes process until it completes
-    ];
+    return Fifo.run( processInfo );
   }
-
-  /**
-   * selects next process to run according to sfj rulles
-   * @param processInfoArr process list to select from
-   * @param timeSoFar units of time since the beginning
-   */
+  // need to consider time so far
+  // also need to change Fifo implementation
   export function select(
     processInfoArr: ProcessInfo[],
     timeSoFar: number
   ) : ProcessInfo | undefined {
     return R.pipe(
       R.filter<ProcessInfo>( p => R.last( p ) > 0 && timeSoFar >= R.head(p) ),
-      R.find( ( p: ProcessInfo ) => R.last(p) !== 0)
+      ( processInfoArrFiltered: ProcessInfo[] ) =>
+        R.reduce<ProcessInfo, ProcessInfo>( R.minBy<ProcessInfo>( p => R.last( p ) ), R.head( processInfoArrFiltered ), processInfoArrFiltered )
     )(processInfoArr);
   }
   /**
@@ -37,7 +34,7 @@ export namespace Fifo {
     processInfoBeforeRun: ProcessInfo,
     processInfoAfterRun: ProcessInfo
   ) : number {
-    return R.last(processInfoBeforeRun) - R.last(processInfoAfterRun);
+    return Fifo.getRunTime( processInfoBeforeRun, processInfoAfterRun );
   }
 
   /**
@@ -51,10 +48,19 @@ export namespace Fifo {
     processInfoAfterRun: ProcessInfo,
     timeSoFar: number
   ) : number {
-    return getRunTime(
+
+//    console.log(
+//      processInfoBeforeRun,
+//      processInfoAfterRun,
+//      timeSoFar
+//    );
+
+ //   return 5;
+    return Fifo.getRunTimeSoFar(
       processInfoBeforeRun,
       processInfoAfterRun,
-    ) + timeSoFar - R.head(processInfoBeforeRun);
+      timeSoFar
+    );
   }
 
   export function executeProcesses ( processInfoArr: ProcessInfo[] ) : number[] {
@@ -64,6 +70,7 @@ export namespace Fifo {
     let process: ProcessInfo | undefined;
 
     while ( process = select( processInfoArr, time ) ) {
+      //console.log('process', process);
       let idx = processInfoArr.indexOf( process );
 
       let processAfterRun = run( process );

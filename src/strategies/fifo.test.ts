@@ -17,17 +17,17 @@ describe('Fifo ', () => {
 
   describe('Fifo.select ', () => {
     it('should retun first process that has run time left', () => {
-      expect( Fifo.select( [[1, 5], [1,2]] ) )
+      expect( Fifo.select( [[1, 5], [1,2]], 1 ) )
         .to.eql([1, 5]);
     });
 
     it('should skip all the processes with zero runtime left', () => {
-      expect( Fifo.select( [[1, 0], [1,2]] ) )
+      expect( Fifo.select( [[1, 0], [1,2]], 1 ) )
         .to.eql([1, 2]);
     });
 
     it('should retun undefined if there are no more processes', () => {
-      expect( Fifo.select( [[1, 0], [1, 0]] ) )
+      expect( Fifo.select( [[1, 0], [1, 0]], 1 ) )
         .to.equal(undefined);
     });
 

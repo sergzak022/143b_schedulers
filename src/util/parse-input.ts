@@ -11,7 +11,7 @@ export type ProcessInfo = [EntryTime, RunTime];
 export function parseInput ( str: string ) : ProcessInfo[] {
 
   let strings = str.trim().split(' ');
-
+  //R.either(R.isEmpty, R.test(/[^0-9]+/)); // either empty or not numeric string
   if (R.any(R.isEmpty, strings))
       throw Error(`Invalid input ${str}`);
 
